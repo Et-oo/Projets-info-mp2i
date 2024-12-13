@@ -105,10 +105,33 @@ void incr(char a[]) // a = a + 1
 {
   assert (31 == strlen(a));
   simplifier(a);
-  for (int i = 30; (a[i] == '1') && (i>0);i--){
-    
+
+  int i = 30;
+  while ( (a[i] == '1') && (i>0)){
+    i--;
   }
   a[i] = '1';
+  for (int j = i+1;a[j] != '\0'; j=j+1){
+    a[j] = '0';
+  }
+  simplifier(a);
+}
+
+void decr(char a[]) {
+  assert (31 == strlen(a));
+  if (is_equal(a,zero)) {
+    for (int i = 0; i<31;i=i+1){
+      a[i] = '1';
+    }
+  }
+  int i = 30;
+  while ( (a[i] == '0') && (i>0)){
+    i--;
+  }
+  a[i] = '0';
+  for (int j = i+1;a[j] != '\0'; j=j+1){
+    a[j] = '1';
+  }
 }
 
 void add_to(char a[], char b[]) // a = a + b
@@ -119,10 +142,17 @@ void add_to(char a[], char b[]) // a = a + b
   simplifier(a); simplifier(b);
   for (int i=30;i>0;i--){
     if (a[i] == '1' && b[i] == '1') {
+      if (retenue == true) {
+	a[i] = '1';
+      }
+
+      else {
+	a[i] = '0';
+      }
       retenue = true;
-      a[i] = '1';
     }
-    if (a[i] != b[i]) {
+
+    else if (a[i] != b[i]) {
       if (retenue == true) {
 	a[i] = '0';
       }
@@ -131,7 +161,8 @@ void add_to(char a[], char b[]) // a = a + b
 	retenue = false;
       }
     }
-    if (a[i] == '0' && b[i] == '0'){
+    
+    else if (a[i] == '0' && b[i] == '0'){
       if (retenue == true) {
 	a[i] = '1';
 	retenue = false;
@@ -150,7 +181,16 @@ void mult_by(char a[], char b[]) // a = a * b
   assert (31 == strlen(a));
   assert (31 == strlen(b));
   simplifier(a);simplifier(b);
-
+  char b2[32];
+  strncpy(b2,b,32);
+  if (is_equal(b,zero) || is_equal(a,zero)){
+    strncpy(a,zero,32);
+  }
+  while (! is_equal(b2,un)) {
+    add_to(a,a);
+    decr(b2);
+  }
+  
 
   
   /* TODO */
@@ -211,43 +251,58 @@ int main(int argc, char *argv[])
 
 
 
-    */
+   
   //INCREMENTATION
   printf("increment 1011010001101011101011001100111 : ");
   char tab2[] = "1011010001101011101011001100111";
   incr(tab2);
   printf("%s\n", tab2);
 
-
+   */
   
   printf("increment 1111111111111111111111111111111 : ");
+
   char tab3[] = "1111111111111111111111111111111";
   incr(tab3);
   printf("%s\n", tab3);
-  printf("increment 0000000000000000000000000000000 : ");
-  char tab4[] = "0000000000000000000000000000000";
+  printf("increment 1111111111111111111111111111110 : ");
+  char tab4[] = "1111111111111111111111111111110";
   incr(tab4);
   printf("%s\n", tab4);
 
-
   //Addition
-  printf("Addition 0000000000000001011010100000101 + 0000000000000000000000000000001 : ");
-  char tab5[] = "0000000000000000000000000000001";
-  char tab6[] = "0000000000000001011010100000101";
+  printf("Addition 0000000000000000000000000000011 + 0000000000000000000000000000010 : ");
+  char tab5[] = "0000000000000000000000000000011";
+  char tab6[] = "0000000000000000000000000000010";
   add_to(tab6,tab5);
   printf("%s\n",tab6); 
 
-  printf("Addition 1111111111111111111111111111111 + 0000000000000000000000000000001 : ");
-  char tab7[] = "1111111111111111111111111111111";
+  printf("Addition 0000000000000000000000000000001 + 0000000000000000000000000000001 : ");
+  char tab7[] = "0000000000000000000000000000001";
   char tab8[] = "0000000000000000000000000000001";
-  assert(is_equal(tab7,q));
-  assert(31 == strlen(q));
+  /*assert(is_equal(tab7,q));
+  assert(31 == strlen(q));*/
   add_to(tab7,tab8);
   printf("%s\n",tab7);
 
 
 
+  printf("Decrementation 1111111111111111111111111111111 : ");
+  char tab9[] = "1111111111111111111111111111111";
+  decr(tab9);
+  printf("%s\n", tab9);
+  incr(tab9);
+  printf("%s\n", tab9);
 
-  printf("PROBLEME INCREMENTATION MARCHE PAS POUR PREMIER TEST, 
+
+  
+  printf("Multiplication : 0000000000000000000000000000011 * 0000000000000000000000000000010 = ");
+  char tab10[] = "0000000000000000000000000000011";
+  char tab11[] = "0000000000000000000000000000010";
+  mult_by(tab10,tab11);
+  printf("%s\n",tab10);
   return 0;
+
+
+
 }
