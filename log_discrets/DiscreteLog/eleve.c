@@ -186,11 +186,12 @@ void mult_by(char a[], char b[]) // a = a * b
   if (is_equal(b,zero) || is_equal(a,zero)){
     strncpy(a,zero,32);
   }
-  while (! is_equal(b2,un)) {
-    add_to(a,a);
-    decr(b2);
+  else{
+    while (! is_equal(b2,un)) {
+      add_to(a,a);
+      decr(b2);
+    }
   }
-  
 
   
   /* TODO */
@@ -201,9 +202,21 @@ void expo(char a[], char b[]) // a = a ** b
 {
   assert (31 == strlen(a));
   assert (31 == strlen(b));
-
-  /* TODO */
-
+  simplifier(a);simplifier(b);
+  if (is_equal(b,zero) || is_equal(a,un)) {
+    strncpy(a,un,32);
+  }
+  else{
+    char b2[32]; char a2[32];
+    strncpy(b2,b,32); strncpy(a2,a,32);
+    while (! is_equal(b2,un)) {
+      printf("\n%s   ", a2);
+      printf("%s   ", a);
+      printf("%s\n   ", b2);
+      mult_by(a,a2);
+      decr(b2);
+    }
+  }
 }
 
 void naif_dlog(char a[], char b[]) // a = dlog_b(a)
@@ -293,14 +306,22 @@ int main(int argc, char *argv[])
   printf("%s\n", tab9);
   incr(tab9);
   printf("%s\n", tab9);
-
-
   
-  printf("Multiplication : 0000000000000000000000000000011 * 0000000000000000000000000000010 = ");
+  
+  
+  printf("Multiplication : 0000000000000000000000000000011 * 0000000000000000000000000000011 = ");
   char tab10[] = "0000000000000000000000000000011";
-  char tab11[] = "0000000000000000000000000000010";
+  char tab11[] = "0000000000000000000000000000011";
   mult_by(tab10,tab11);
   printf("%s\n",tab10);
+
+  printf("Exponentiation : 0000000000000000000000000000011 ^ 0000000000000000000000000000010 = ");
+  char tab12[] = "0000000000000000000000000000011";
+  char tab13[] = "0000000000000000000000000000010";
+  expo(tab12,tab13);
+  printf("%s\n",tab12);
+  
+  
   return 0;
 
 
