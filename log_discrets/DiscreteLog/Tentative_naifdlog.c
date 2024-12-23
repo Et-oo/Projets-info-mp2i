@@ -223,13 +223,13 @@ void naif_dlog(char a[], char b[]) // a = dlog_b(a)
 {
   assert (31 == strlen(a));
   assert (31 == strlen(b));
-  char res[] ;
+  char res[32] ;
   strncpy(res, zero,32);
-  char calc[] ;
+  char calc[32] ;
   strncpy(calc, b,32);
   expo(calc, res);
   while (!is_equal(a,calc)){
-    calc = strncpy(b);
+    strncpy(calc, b,32);
     expo(calc, res);
     incr(res);
   }
@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
      */
 
   printf("DLOG NAIF ///\n");
-  naif_dlog(target0,7);
+  naif_dlog(target0,sept);
   printf("Dlog_7(target0) == x: %s",is_equal(x,target0) ? "true" : "false");
   return 0;
 
