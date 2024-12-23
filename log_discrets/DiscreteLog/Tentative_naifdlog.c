@@ -223,15 +223,15 @@ void naif_dlog(char a[], char b[]) // a = dlog_b(a)
 {
   assert (31 == strlen(a));
   assert (31 == strlen(b));
-  char res[] = strncpy(zero);
-  char calc[] = strncpy(b);
+  char res[] = strncpy(zero,32);
+  char calc[] = strncpy(b,32);
   expo(calc, res);
   while (!is_equal(a,calc)){
     calc = strncpy(b);
     expo(calc, res);
     incr(res);
   }
-  a = strncpy(calc);
+  a = strncpy(calc,32);
 }
 
 void dlog(char a[], char b[]) // baby step - giant step
