@@ -236,14 +236,68 @@ void naif_dlog(char a[], char b[]) // a = dlog_b(a)
   strncpy(a,calc,32);
 }
 
-void dlog(char a[], char b[]) // baby step - giant step
+void dlog(char a[], char b[]) // Baby-step Giant-step
 {
-  assert (31 == strlen(a));
-  assert (31 == strlen(b));
+    assert(31 == strlen(a));
+    assert(31 == strlen(b));
 
-  /* TODO */
+    // Taille de m = sqrt(q)
+    char m[32];
+    strncpy(m, sqrtq, 32);
 
+    // Calcul de g^m
+    char g_m[32];
+    strncpy(g_m, b, 32);
+    expo(g_m, m);
+
+    // Calcul de g^(-m) en utilisant g^(q-1-m)
+    char g_inv_m[32];
+    strncpy(g_inv_m, g_m, 32);
+    negate(g_inv_m); // Inverse en binaire
+
+    // Baby-step : Stocker les puissances g^i
+    char baby_steps[46341][32];
+    strncpy(baby_steps[0], un, 32);
+    for (int i = 1; i < 46341; i++) {
+        strncpy(baby_steps[i], baby_steps[i - 1], 32);
+        mult_by(baby_steps[i], b); // baby_steps[i] = g^i
+    }
+
+    // Giant-step : Recherche
+    char h[32];
+    strncpy(h, a, 32);
+
+    char current[32];
+    strncpy(current, h, 32);
+
+    for (int j = 0; j < 46341; j++) {
+        // Vérifier si current est dans les baby-steps
+        for (int i = 0; i < 46341; i++) {
+            if (is_equal(current, baby_steps[i])) {
+                // Trouvé : retourner le logarithme discret
+                char j_val[32];
+                strncpy(j_val, zero, 32);
+                for (int k = 0; k < j; k++) incr(j_val);
+
+                char i_val[32];
+                strncpy(i_val, zero, 32);
+                for (int k = 0; k < i; k++) incr(i_val);
+
+                mult_by(j_val, m); // j * m
+                add_to(j_val, i_val); // j * m + i
+
+                strncpy(a, j_val, 32);
+                return;
+            }
+        }
+        mult_by(current, g_inv_m); // current *= g^(-m)
+    }
+
+    // Si aucune correspondance n'a été trouvée
+    printf("Erreur : logarithme discret introuvable\n");
+    strncpy(a, zero, 32);
 }
+
 
 int main(int argc, char *argv[])
 {
