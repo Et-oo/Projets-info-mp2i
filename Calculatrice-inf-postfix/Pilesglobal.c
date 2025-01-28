@@ -1,72 +1,100 @@
-//queue.h
-#ifndef QUEUE_H
-#define QUEUE_H
+// pile.h
+#ifndef PILE_H
+#define PILE_H
 
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
 
-typedef struct queue_s queue_t;
+typedef struct Pile Pile;
 
-queue_t *init(void);
-bool is_empty(queue_t *s);
-int top(queue_t *s);
-void push(int x, queue_t *s);
-void pop(queue_t *s);
+Pile *init(void);
+bool est_vide(Pile *pile);
+int sommet_pile(Pile *pile);
+void empiler(int x, Pile *pile);
+void depiler(Pile *pile);
 
-#endif
+#endif // PILE_H
 
+// pile.c
+#include "pile.h"
 
-
-
-//queue.c
-
-
-#include "queue.h"
-
-struct queue_s {
-  int *tab;
-  int taille;
-  int tete;
-  int max;
+struct Pile {
+    int *tab;
+    int taille;
+    int max;
 };
 
-queue_t *init(void){
-  queue_t *pile = malloc(sizeof(queue_t));
-  (*pile).tab = malloc(20*sizeof(int));
-  (*pile).taille =  0;
-  (*pile).tete = 0;
-  (*pile).max = 20;
-  return pile;
+Pile *creer_pile(void) {
+    Pile *pile = malloc(sizeof(Pile));
+    if (!pile) {
+        fprintf(stderr, "Erreur : allocation de memoire pour la pile\n");
+        return NULL;
+    }
+    pile->tab = malloc(20 * sizeof(int));
+    if (!pile->tab) {
+        fprintf(stderr, "Erreur : allocation de memoire pour les elements de la pile\n");
+        free(pile);
+        return NULL;
+    }
+    pile->taille = 0;
+    pile->max = 20;
+    return pile;
 }
 
-bool is_empty(queue_t *queue){
-  return (queue->taille == 0);
+bool est_vide(Pile *pile) {
+    return (pile->taille == 0);
 }
 
-int top(queue_t *queue){
-  assert(! is_empty(queue));
-  return queue->tab[queue->tete];
+int sommet_pile(Pile *pile) {
+    assert(!est_vide(pile));
+    return pile->tab[pile->taille - 1];
 }
 
-void redimensionne(queue_t *queue){
-  int *new_tab = malloc(2*queue->max*sizeof(int));
-  for(int i ; i<queue->max ; i = i+1){
-    new_tab[i] = queue->tab[i];
-  }
-  free(queue->tab);
-  queue->max = queue->max *2;
-  queue->tab = new_tab;
+void redimensionner(Pile *pile) {
+    int *new_tab = malloc(2 * pile->max * sizeof(int));
+    for (int i = 0; i < pile->taille; i++) {
+        new_tab[i] = pile->tab[i];
+    }
+    free(pile->tab);
+    pile->tab = new_tab;
+    pile->max *= 2;
 }
 
-void push(int elt, queue_t *queue){
-  if (queue->taille == queue->max){redimensionne(queue);}
-  queue->tab[queue->taille] = elt;
-  queue->taille++;
-  
+void empiler(int x, Pile *pile) {
+    if (pile->taille == pile->max) {
+        redimensionner(pile);
+    }
+    pile->tab[pile->taille++] = x;
 }
 
-void pop(queue_t *queue){
-  assert(! is_empty(queue));
-  queue->taille--;
+void depiler(Pile *pile) {
+    assert(!est_vide(pile));
+    pile->taille--;
+}
+
+// Exemple d'utilisation
+#include <stdio.h>
+
+int main() {
+    Pile *ma_pile = creer_pile();
+
+    empiler(10, ma_pile);
+    empiler(20, ma_pile);
+    empiler(30, ma_pile);
+
+    printf("Sommet de la pile: %d\n", sommet_pile(ma_pile));
+
+    depiler(ma_pile);
+    printf("Apres depiler, sommet: %d\n", sommet_pile(ma_pile));
+
+    depiler(ma_pile);
+    depiler(ma_pile);
+
+    printf("Pile vide: %s\n", est_vide(ma_pile) ? "oui" : "non");
+
+    free(ma_pile->tab);
+    free(ma_pile);
+
+    return 0;
 }
