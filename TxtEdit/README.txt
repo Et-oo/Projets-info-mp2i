@@ -29,4 +29,4 @@ Pour quitter le programme, il suffit d'appuyer rapidement deux fois sur la touch
 
 ##################################################################################################################
 
-Tout droits réservés : personne (éventuellement Mr Bourse mais pas sur qu'il souhaite être affilié à ce projet)
+Tous droits réservés : personne (éventuellement Mr Bourse mais pas sur qu'il souhaite être affilié à ce projet)
